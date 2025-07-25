@@ -1,4 +1,31 @@
+# プランニングポーカー
+
+チームでアジャイル開発のストーリーポイント見積もりを行うためのWebアプリケーションです。
+
+## 特徴
+
+- 📊 フィボナッチ数列のカードでストーリーポイント見積もり
+- 👥 複数プレイヤーでの同時投票
+- 📈 投票結果の統計分析（平均、最小・最大、推奨値）
+- 🎯 合意状況の自動判定
+- 📱 レスポンシブデザイン（モバイル対応）
+- 🌙 ダークモード対応
+
+## 開発環境
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+
+### 技術スタック
+- **Framework**: Next.js 15.4.4
+- **Language**: TypeScript
+- **Styling**: TailwindCSS
+- **UI**: React 19.1.0
+
+### コーディング規約
+- Named Exportを基本とする
+- TypeScriptの型安全性を重視
+- 関数型コンポーネントを使用
+- 詳細は `.github/copilot-instructions.md` を参照
 
 ## Getting Started
 

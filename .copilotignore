@@ -1,0 +1,36 @@
+# Copilotに学習させないファイル/ディレクトリ
+
+# 依存関係
+node_modules/
+.next/
+.vercel/
+
+# ログファイル
+*.log
+logs/
+
+# 環境変数
+.env*
+!.env.example
+
+# テンポラリファイル
+.DS_Store
+Thumbs.db
+
+# ビルドファイル
+dist/
+build/
+out/
+
+# テストカバレッジ
+coverage/
+
+# エディタ設定
+.idea/
+*.swp
+*.swo
+*~
+
+# キャッシュ
+.eslintcache
+.stylelintcache
