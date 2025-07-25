@@ -50,13 +50,11 @@ export type Story = {
 
 ### スタイリング
 - TailwindCSSを使用
-- レスポンシブデザインを考慮
-- ダークモード対応
-- 一貫したデザインシステム
 
 ### 状態管理
 - React Hooksを使用（useState, useEffect等）
 - useStateにはジェネリクスを明示的に指定する
+- カスタムフックで関連する状態とロジックをまとめる
 - 状態の最小化
 - 適切な状態の分離
 
@@ -65,6 +63,9 @@ export type Story = {
 const [players, setPlayers] = useState<Player[]>([]);
 const [isVisible, setIsVisible] = useState<boolean>(false);
 const [message, setMessage] = useState<string>('');
+
+// カスタムフック使用例
+const { isConnected, connect, disconnect } = useBacklogApi();
 ```
 
 ### アクセシビリティ
@@ -91,3 +92,10 @@ const [message, setMessage] = useState<string>('');
 - 適切なコメントの追加
 - 関数の純粋性を保つ
 - エラーハンドリングの実装
+
+## Backlog API連携
+- backlog-jsライブラリを使用してBacklog APIと連携
+- APIキー認証による課題取得機能
+- 取得した課題をプランニングポーカーの題材として使用
+- BacklogConnectionコンポーネントで接続・課題選択を管理
+- 課題情報（課題キー、概要、説明、担当者等）を自動的にストーリーに変換

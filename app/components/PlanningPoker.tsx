@@ -5,6 +5,7 @@ import { StoryInput } from './StoryInput';
 import { PlayerList } from './PlayerList';
 import { CardSelection } from './CardSelection';
 import { Results } from './Results';
+import { BacklogConnection } from './BacklogConnection';
 
 export type Player = {
   id: string;
@@ -27,6 +28,13 @@ export function PlanningPoker() {
   const [showResults, setShowResults] = useState<boolean>(false);
   const [isVotingPhase, setIsVotingPhase] = useState<boolean>(false);
   const [currentPlayer, setCurrentPlayer] = useState<Player | null>(null);
+  const [selectedBacklogIssue, setSelectedBacklogIssue] =
+    useState<BacklogIssue | null>(null);
+
+  // Backlog課題選択時の処理
+  const handleBacklogIssueSelect = (issue: BacklogIssue) => {
+    setSelectedBacklogIssue(issue);
+  };
 
   // プレイヤーを追加
   const addPlayer = (name: string) => {
@@ -57,6 +65,7 @@ export function PlanningPoker() {
     setCurrentStory(story);
     setIsVotingPhase(true);
     setShowResults(false);
+    setSelectedBacklogIssue(null); // ストーリー開始時にBacklog課題をクリア
     // 全プレイヤーの投票をリセット
     setPlayers(
       players.map((p) => ({
@@ -120,9 +129,16 @@ export function PlanningPoker() {
 
   return (
     <div className="max-w-6xl mx-auto space-y-8">
+      {/* Backlog連携セクション */}
+      <BacklogConnection onIssueSelect={handleBacklogIssueSelect} />
+
       {/* ストーリー入力セクション */}
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
-        <StoryInput onStartStory={startStory} currentStory={currentStory} />
+        <StoryInput
+          onStartStory={startStory}
+          currentStory={currentStory}
+          selectedBacklogIssue={selectedBacklogIssue}
+        />
       </div>
 
       {/* プレイヤー管理セクション */}
