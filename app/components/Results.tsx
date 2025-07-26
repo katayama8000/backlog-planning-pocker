@@ -42,9 +42,10 @@ export function Results({ players, onStartNewRound }: ResultsProps) {
   const min = numericVotes.length > 0 ? Math.min(...numericVotes) : 0;
   const max = numericVotes.length > 0 ? Math.max(...numericVotes) : 0;
 
-  // 最も近いフィボナッチ数を見つける
-  const fibSequence = [0, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89];
-  const nearestFib = fibSequence.reduce((prev, curr) =>
+  // Find the nearest valid voting value (not Fibonacci numbers)
+  // Only use 0.5, 1, 2 as valid voting values
+  const validVoteValues = [0.5, 1, 2];
+  const recommendedValue = validVoteValues.reduce((prev, curr) =>
     Math.abs(curr - average) < Math.abs(prev - average) ? curr : prev
   );
 
@@ -116,7 +117,7 @@ export function Results({ players, onStartNewRound }: ResultsProps) {
             </div>
             <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 text-center">
               <div className="text-2xl font-bold text-blue-800 dark:text-blue-200">
-                {nearestFib}
+                {recommendedValue}
               </div>
               <div className="text-sm text-blue-600 dark:text-blue-400">
                 推奨値
