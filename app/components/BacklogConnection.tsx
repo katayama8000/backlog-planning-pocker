@@ -2,26 +2,28 @@
 
 import { useState } from 'react';
 import { useBacklogApi } from '../hooks/useBacklogApi';
-import { BacklogIssue, BacklogProject } from './BacklogConnection';
-type BacklogConnectionProps = {
+import type { Issue } from 'backlog-js/dist/types/entity';
+
+type BacklogIssue = Issue.Issue;
+
+type Props = {
   onIssueSelect: (issue: BacklogIssue) => void;
 };
 
-export function BacklogConnection({ onIssueSelect }: BacklogConnectionProps) {
-  const [apiKey, setApiKey] = useState<string>('');
-  const [host, setHost] = useState<string>('');
-  const [searchQuery, setSearchQuery] = useState<string>('');
+export function BacklogConnection({ onIssueSelect }: Props) {
+  const [apiKey, setApiKey] = useState('');
+  const [host, setHost] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
 
   const {
     isConnected,
     isLoading,
     error,
-    projects,
     issues,
     selectedProject,
     connect,
     connectWithDefaults,
-    disconnect: apiDisconnect,
+    disconnect,
     loadIssues,
     clearError,
     searchIssues,
@@ -36,15 +38,12 @@ export function BacklogConnection({ onIssueSelect }: BacklogConnectionProps) {
   };
 
   const handleDisconnect = () => {
-    apiDisconnect();
+    disconnect();
     setApiKey('');
     setHost('');
   };
 
-  const fillDefaults = () => {
-    setHost('nulab.backlog.jp');
-    setApiKey('');
-  };
+  // 未使用の関数・変数は削除
 
   const handleSearch = async () => {
     if (searchQuery.trim()) {
@@ -117,11 +116,6 @@ export function BacklogConnection({ onIssueSelect }: BacklogConnectionProps) {
           </button>
 
           <div className="flex gap-2">
-            <button
-              onClick={fillDefaults}
-              className="flex-1 bg-gray-200 hover:bg-gray-300 dark:bg-gray-600 dark:hover:bg-gray-500 text-gray-800 dark:text-white px-4 py-2 rounded-lg font-medium transition-colors">
-              デフォルト値を入力
-            </button>
             <button
               onClick={handleConnectWithDefaults}
               disabled={isLoading}

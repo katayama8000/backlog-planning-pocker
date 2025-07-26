@@ -2,7 +2,9 @@
 
 import { useState } from 'react';
 import { Story } from './PlanningPoker';
-import { BacklogIssue } from './BacklogConnection';
+import type { Issue } from 'backlog-js/dist/types/entity';
+
+type BacklogIssue = Issue.Issue;
 
 type StoryInputProps = {
   onStartStory: (story: Story) => void;
@@ -45,10 +47,9 @@ export function StoryInput({
   return (
     <div>
       <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-4">
-        ストーリー
+        Story
       </h2>
 
-      {/* Backlog課題表示 */}
       {selectedBacklogIssue && !currentStory && (
         <div className="mb-6 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
           <div className="flex items-start justify-between">

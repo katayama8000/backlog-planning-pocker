@@ -20,6 +20,9 @@ export type Story = {
   description: string;
 };
 
+import type { Issue } from 'backlog-js/dist/types/entity';
+type BacklogIssue = Issue.Issue;
+
 const FIBONACCI_CARDS = [0.5, 1, 2];
 
 export function PlanningPoker() {

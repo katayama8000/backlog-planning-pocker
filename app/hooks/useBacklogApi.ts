@@ -4,14 +4,17 @@ import { useState, useCallback } from 'react';
 import 'isomorphic-fetch';
 import 'isomorphic-form-data';
 import * as backlogjs from 'backlog-js';
-import { BacklogIssue, type BacklogProject } from '../components/BacklogConnection';
+import type { Project, Issue } from 'backlog-js/dist/types/entity';
+
+type BacklogProject = Project.Project;
+type BacklogIssue = Issue.Issue;
 
 type UseBacklogApiReturn = {
     isConnected: boolean;
     isLoading: boolean;
     error: string;
     projects: BacklogProject[];
-    issues: BacklogIssue[]; // BacklogIssue型の配列を使用
+    issues: BacklogIssue[];
     selectedProject: BacklogProject | null;
     connect: (host: string, apiKey: string) => Promise<void>;
     connectWithDefaults: () => Promise<void>;

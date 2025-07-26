@@ -1,39 +1,40 @@
 # GitHub Copilot Instructions
 
-このプロジェクトはNext.js、TypeScript、TailwindCSSを使用したプランニングポーカーアプリケーションです。
+This project is a planning poker application using Next.js, TypeScript, and TailwindCSS.
 
-## コーディング規約
+## Coding Guidelines
 
-### 基本方針
-- **Named Export**を基本とする（default exportは使用しない）
-- TypeScriptの型安全性を重視する
-- 関数型コンポーネントを使用する
-- Reactフックを適切に使用する
+### Basic Policy
+- Use **Named Export** as a rule (do not use default export)
+- Emphasize TypeScript type safety
+- Use functional components
+- Use React hooks appropriately
+- Prefer arrow functions for defining functions whenever possible
 
-### Export/Import規約
+### Export/Import Rules
 ```typescript
-// ❌ Default Export（使用しない）
+// ❌ Default Export (do not use)
 export default function Component() {}
 import Component from './Component';
 
-// ✅ Named Export（推奨）
+// ✅ Named Export (recommended)
 export function Component() {}
 import { Component } from './Component';
 
-// 例外: Next.jsページコンポーネント
+// Exception: Next.js page components
 export function Home() {}
-export default Home; // Next.jsの要件で併用
+export default Home; // Required for Next.js
 ```
 
-### コンポーネント設計
-- 単一責任の原則に従う
-- propsの型定義を明確にする
-- 再利用可能なコンポーネントを作成する
-- 適切なdefaultPropsを設定する
+### Component Design
+- Follow the single responsibility principle
+- Clearly define prop types
+- Create reusable components
+- Set appropriate defaultProps
 
-### 型定義
+### Type Definitions
 ```typescript
-// 型定義の例
+// Example type definitions
 export type Player = {
   id: string;
   name: string;
@@ -48,54 +49,54 @@ export type Story = {
 };
 ```
 
-### スタイリング
-- TailwindCSSを使用
+### Styling
+- Use TailwindCSS
 
-### 状態管理
-- React Hooksを使用（useState, useEffect等）
-- useStateにはジェネリクスを明示的に指定する
-- カスタムフックで関連する状態とロジックをまとめる
-- 状態の最小化
-- 適切な状態の分離
+### State Management
+- Use React Hooks (useState, useEffect, etc.)
+- Explicitly specify generics for useState
+- Use custom hooks to group related state and logic
+- Minimize state
+- Separate state appropriately
 
 ```typescript
-// useState使用例
+// useState example
 const [players, setPlayers] = useState<Player[]>([]);
 const [isVisible, setIsVisible] = useState<boolean>(false);
 const [message, setMessage] = useState<string>('');
 
-// カスタムフック使用例
+// Custom hook example
 const { isConnected, connect, disconnect } = useBacklogApi();
 ```
 
-### アクセシビリティ
-- セマンティックなHTML要素を使用
-- 適切なaria-label、aria-describedbyを設定
-- キーボードナビゲーションをサポート
-- 色以外での情報伝達も考慮
+### Accessibility
+- Use semantic HTML elements
+- Set appropriate aria-label, aria-describedby
+- Support keyboard navigation
+- Consider information transmission beyond color
 
-### パフォーマンス
-- 不要な再レンダリングを避ける
-- useCallback、useMemoを適切に使用
-- 画像の最適化
+### Performance
+- Avoid unnecessary re-rendering
+- Use useCallback and useMemo appropriately
+- Optimize images
 
-## 開発時の注意点
-- 型エラーを解決してからコミット
-- ESLintの警告を無視しない
-- コンポーネントの責任を明確にする
-- テスタブルなコードを書く
-- 日本語UIに対応した設計
+## Development Notes
+- Resolve type errors before committing
+- Do not ignore ESLint warnings
+- Clarify component responsibilities
+- Write testable code
+- Design for Japanese UI support
 
-## 推奨するベストプラクティス
-- 早期リターンパターンを使用
-- 条件分岐の簡潔化
-- 適切なコメントの追加
-- 関数の純粋性を保つ
-- エラーハンドリングの実装
+## Recommended Best Practices
+- Use early return pattern
+- Simplify conditional branches
+- Add appropriate comments
+- Keep functions pure
+- Implement error handling
 
-## Backlog API連携
-- backlog-jsライブラリを使用してBacklog APIと連携
-- APIキー認証による課題取得機能
-- 取得した課題をプランニングポーカーの題材として使用
-- BacklogConnectionコンポーネントで接続・課題選択を管理
-- 課題情報（課題キー、概要、説明、担当者等）を自動的にストーリーに変換
+## Backlog API Integration
+- Use the backlog-js library to integrate with the Backlog API
+- Implement issue retrieval via API key authentication
+- Use retrieved issues as planning poker topics
+- Manage connection and issue selection in the BacklogConnection component
+- Automatically convert issue information (issue key, summary, description, assignee, etc.) to stories
