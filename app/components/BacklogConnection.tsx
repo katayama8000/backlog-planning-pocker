@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useBacklogApi } from '../hooks/useBacklogApi';
 import { BacklogIssue } from '../types/backlog';
 
@@ -14,6 +14,9 @@ export function BacklogConnection({ onIssueSelect }: Props) {
   const host = 'nulab.backlog.jp';
   const [searchQuery, setSearchQuery] = useState('');
 
+  // 環境変数からAPIキーを取得
+  const envApiKey = process.env.NEXT_PUBLIC_BACKLOG_API_KEY;
+
   const {
     isConnected,
     isLoading,
@@ -21,11 +24,18 @@ export function BacklogConnection({ onIssueSelect }: Props) {
     issues,
     selectedProject,
     connect,
-    disconnect,
     loadIssues,
     clearError,
     searchIssues,
   } = useBacklogApi();
+
+  // 環境変数があれば自動接続
+  useEffect(() => {
+    if (envApiKey && !isConnected && !isLoading) {
+      setApiKey(envApiKey);
+      connect(host, envApiKey);
+    }
+  }, [envApiKey, isConnected, isLoading]);
 
   // Filter issues by status on frontend
   const filteredIssues = statusFilter
@@ -34,11 +44,6 @@ export function BacklogConnection({ onIssueSelect }: Props) {
 
   const handleConnect = async () => {
     await connect(host, apiKey);
-  };
-
-  const handleDisconnect = () => {
-    disconnect();
-    setApiKey('');
   };
 
   // 未使用の関数・変数は削除
@@ -52,6 +57,23 @@ export function BacklogConnection({ onIssueSelect }: Props) {
   };
 
   if (!isConnected) {
+    // 環境変数があればAPIキー入力をスキップ
+    if (envApiKey) {
+      return (
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+          <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-4">
+            Backlog連携
+          </h2>
+          <div className="text-blue-700 dark:text-blue-300 mb-2">
+            APIキーは環境変数から自動設定されています。
+          </div>
+          <div className="text-sm text-gray-600 dark:text-gray-400">
+            接続中...
+          </div>
+        </div>
+      );
+    }
+
     return (
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
         <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-4">
@@ -121,11 +143,6 @@ export function BacklogConnection({ onIssueSelect }: Props) {
         <h2 className="text-2xl font-bold text-gray-800 dark:text-white">
           Backlog課題選択
         </h2>
-        <button
-          onClick={handleDisconnect}
-          className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200">
-          接続解除
-        </button>
       </div>
 
       {/* 課題一覧 */}

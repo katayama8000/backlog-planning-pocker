@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { StoryInput } from './StoryInput';
+import { SelectedIssue } from './SelectedIssue';
 import { PlayerList } from './PlayerList';
 import { CardSelection } from './CardSelection';
 import { Results } from './Results';
@@ -25,20 +25,23 @@ const FIBONACCI_CARDS = [0.5, 1, 2];
 
 export function PlanningPoker() {
   const [players, setPlayers] = useState<Player[]>([]);
-  const [currentStory, setCurrentStory] = useState<Story | null>(null);
   const [showResults, setShowResults] = useState<boolean>(false);
-  const [isVotingPhase, setIsVotingPhase] = useState<boolean>(false);
   const [currentPlayer, setCurrentPlayer] = useState<Player | null>(null);
   const [selectedBacklogIssue, setSelectedBacklogIssue] =
     useState<BacklogIssue | null>(null);
 
-  // Backlog課題選択時の処理
+  // Handle Backlog issue selection
   const handleBacklogIssueSelect = (issue: BacklogIssue) => {
     setSelectedBacklogIssue(issue);
   };
 
   // プレイヤーを追加
   const addPlayer = (name: string) => {
+    // 同名チェック
+    if (players.some((p) => p.name === name)) {
+      alert('同じ名前のプレーヤーは追加できません');
+      return;
+    }
     const newPlayer: Player = {
       id: Date.now().toString(),
       name,
@@ -61,46 +64,27 @@ export function PlanningPoker() {
     }
   };
 
-  // ストーリーを開始
-  const startStory = (story: Story) => {
-    setCurrentStory(story);
-    setIsVotingPhase(true);
-    setShowResults(false);
-    setSelectedBacklogIssue(null); // ストーリー開始時にBacklog課題をクリア
-    // 全プレイヤーの投票をリセット
-    setPlayers(
-      players.map((p) => ({
-        ...p,
-        selectedCard: null,
-        hasVoted: false,
-      }))
-    );
-  };
-
   // カードを選択
-  const selectCard = (cardValue: number) => {
-    if (!currentPlayer || !isVotingPhase) return;
-
+  const selectCard = (cardValue: number | null) => {
+    if (!currentPlayer) return;
     setPlayers(
       players.map((p) =>
         p.id === currentPlayer.id
-          ? { ...p, selectedCard: cardValue, hasVoted: true }
+          ? { ...p, selectedCard: cardValue, hasVoted: cardValue !== null }
           : p
       )
     );
-
-    // 現在のプレイヤーの投票状態を更新
     setCurrentPlayer({
       ...currentPlayer,
       selectedCard: cardValue,
-      hasVoted: true,
+      hasVoted: cardValue !== null,
     });
   };
 
   // 結果を表示
   const revealCards = () => {
     setShowResults(true);
-    setIsVotingPhase(false);
+    setSelectedBacklogIssue(null);
   };
 
   // 新しいラウンドを開始
@@ -113,8 +97,6 @@ export function PlanningPoker() {
       }))
     );
     setShowResults(false);
-    setIsVotingPhase(true);
-
     if (currentPlayer) {
       setCurrentPlayer({
         ...currentPlayer,
@@ -133,13 +115,11 @@ export function PlanningPoker() {
       {/* Left Column */}
       <div className="lg:col-span-2 space-y-8">
         <BacklogConnection onIssueSelect={handleBacklogIssueSelect} />
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
-          <StoryInput
-            onStartStory={startStory}
-            currentStory={currentStory}
-            selectedBacklogIssue={selectedBacklogIssue}
-          />
-        </div>
+        {selectedBacklogIssue && (
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+            <SelectedIssue selectedBacklogIssue={selectedBacklogIssue} />
+          </div>
+        )}
       </div>
 
       {/* Right Column */}
@@ -155,19 +135,32 @@ export function PlanningPoker() {
           />
         </div>
 
-        {isVotingPhase && currentPlayer && (
+        {currentPlayer && (
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
             <CardSelection
               cards={FIBONACCI_CARDS}
               selectedCard={currentPlayer.selectedCard}
               onSelectCard={selectCard}
-              disabled={currentPlayer.hasVoted}
+              disabled={false}
             />
             <div className="mt-6 text-center">
               <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
                 投票済み: {players.filter((p) => p.hasVoted).length} /{' '}
                 {players.length}
               </p>
+              {/* 投票済みの場合は選択済みポイントを表示 */}
+              {currentPlayer.selectedCard !== null && (
+                <p className="text-base text-blue-700 dark:text-blue-300 font-bold mb-2">
+                  あなたの選択:{' '}
+                  {currentPlayer.selectedCard === -1
+                    ? '？ (わからない)'
+                    : currentPlayer.selectedCard === -2
+                    ? '∞ (無限大)'
+                    : currentPlayer.selectedCard === -3
+                    ? '☕ (休憩)'
+                    : currentPlayer.selectedCard}
+                </p>
+              )}
               {allPlayersVoted && (
                 <button
                   onClick={revealCards}
