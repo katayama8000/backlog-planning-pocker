@@ -2,9 +2,7 @@
 
 import { useState } from 'react';
 import { useBacklogApi } from '../hooks/useBacklogApi';
-import type { Issue } from 'backlog-js/dist/types/entity';
-
-type BacklogIssue = Issue.Issue;
+import { BacklogIssue } from '../types/backlog';
 
 type Props = {
   onIssueSelect: (issue: BacklogIssue) => void;

@@ -2,9 +2,7 @@
 
 import { useState } from 'react';
 import { Story } from './PlanningPoker';
-import type { Issue } from 'backlog-js/dist/types/entity';
-
-type BacklogIssue = Issue.Issue;
+import { BacklogIssue } from '../types/backlog';
 
 type StoryInputProps = {
   onStartStory: (story: Story) => void;

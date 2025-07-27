@@ -4,10 +4,7 @@ import { useState, useCallback } from 'react';
 import 'isomorphic-fetch';
 import 'isomorphic-form-data';
 import * as backlogjs from 'backlog-js';
-import type { Project, Issue } from 'backlog-js/dist/types/entity';
-
-type BacklogProject = Project.Project;
-type BacklogIssue = Issue.Issue;
+import { BacklogIssue, BacklogProject } from '../types/backlog';
 
 type UseBacklogApiReturn = {
     isConnected: boolean;

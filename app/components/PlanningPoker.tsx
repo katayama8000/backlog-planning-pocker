@@ -6,6 +6,7 @@ import { PlayerList } from './PlayerList';
 import { CardSelection } from './CardSelection';
 import { Results } from './Results';
 import { BacklogConnection } from './BacklogConnection';
+import { BacklogIssue } from '../types/backlog';
 
 export type Player = {
   id: string;
@@ -19,9 +20,6 @@ export type Story = {
   title: string;
   description: string;
 };
-
-import type { Issue } from 'backlog-js/dist/types/entity';
-type BacklogIssue = Issue.Issue;
 
 const FIBONACCI_CARDS = [0.5, 1, 2];
 
