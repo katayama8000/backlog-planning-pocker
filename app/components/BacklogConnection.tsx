@@ -21,7 +21,6 @@ export function BacklogConnection({ onIssueSelect }: Props) {
     issues,
     selectedProject,
     connect,
-    connectWithDefaults,
     disconnect,
     loadIssues,
     clearError,

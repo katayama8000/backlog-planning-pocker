@@ -14,7 +14,6 @@ type UseBacklogApiReturn = {
     issues: BacklogIssue[];
     selectedProject: BacklogProject | null;
     connect: (host: string, apiKey: string) => Promise<void>;
-    connectWithDefaults: () => Promise<void>;
     disconnect: () => void;
     loadIssues: (project: BacklogProject) => Promise<void>;
     clearError: () => void;
@@ -31,20 +30,18 @@ export function useBacklogApi(): UseBacklogApiReturn {
     const [selectedProject, setSelectedProject] = useState<BacklogProject | null>(null);
     const [backlogClient, setBacklogClient] = useState<backlogjs.Backlog | null>(null);
 
-    // 開発用のデフォルト値
     const DEFAULT_HOST = 'nulab.backlog.jp';
-    const DEFAULT_API_KEY = '';
+    const DEFAULT_API_KEY = process.env.NEXT_PUBLIC_BACKLOG_API_KEY || '';
 
     const clearError = useCallback(() => {
         setError('');
     }, []);
 
-    // プロジェクトの課題を取得するヘルパー関数
     const loadIssuesForProject = async (project: BacklogProject, client: backlogjs.Backlog) => {
         try {
             const issuesData = await client.getIssues({
                 projectId: [project.id],
-                statusId: [1, 2, 3], // 未対応、処理中、処理済み
+                statusId: [1, 2, 3],
                 count: 20,
                 sort: 'updated',
                 order: 'desc'
@@ -54,7 +51,6 @@ export function useBacklogApi(): UseBacklogApiReturn {
             setSelectedProject(project);
         } catch (err) {
             console.error('Issues loading error:', err);
-            // エラーは表示しない（自動選択なので）
         }
     };
 
@@ -69,19 +65,13 @@ export function useBacklogApi(): UseBacklogApiReturn {
 
         try {
             const backlog = new backlogjs.Backlog({ host, apiKey });
-
-            // 接続テスト
-            await backlog.getSpace();
-
-            // プロジェクト一覧を取得
             const projectsData = await backlog.getProjects();
 
             setBacklogClient(backlog);
-            setProjects(projectsData as BacklogProject[]);
+            setProjects(projectsData);
             setIsConnected(true);
 
-            // PASTAプロジェクトを自動選択
-            const pastaProject = (projectsData as BacklogProject[]).find(
+            const pastaProject = (projectsData).find(
                 p => p.name === 'PASTA' || p.projectKey === 'PASTA'
             );
             if (pastaProject) {
@@ -95,10 +85,6 @@ export function useBacklogApi(): UseBacklogApiReturn {
             setIsLoading(false);
         }
     }, []);
-
-    const connectWithDefaults = useCallback(async () => {
-        await connect(DEFAULT_HOST, DEFAULT_API_KEY);
-    }, [connect, DEFAULT_HOST, DEFAULT_API_KEY]);
 
     const disconnect = useCallback(() => {
         setIsConnected(false);
@@ -183,7 +169,6 @@ export function useBacklogApi(): UseBacklogApiReturn {
         issues,
         selectedProject,
         connect,
-        connectWithDefaults,
         disconnect,
         loadIssues,
         clearError,
