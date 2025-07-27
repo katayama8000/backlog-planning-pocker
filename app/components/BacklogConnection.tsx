@@ -11,6 +11,7 @@ type Props = {
 };
 
 export function BacklogConnection({ onIssueSelect }: Props) {
+  const [statusFilter, setStatusFilter] = useState<string>('');
   const [apiKey, setApiKey] = useState('');
   const host = 'nulab.backlog.jp';
   const [searchQuery, setSearchQuery] = useState('');
@@ -28,6 +29,11 @@ export function BacklogConnection({ onIssueSelect }: Props) {
     clearError,
     searchIssues,
   } = useBacklogApi();
+
+  // Filter issues by status on frontend
+  const filteredIssues = statusFilter
+    ? issues.filter((issue) => issue.status.name === statusFilter)
+    : issues;
 
   const handleConnect = async () => {
     await connect(host, apiKey);
@@ -133,18 +139,39 @@ export function BacklogConnection({ onIssueSelect }: Props) {
               課題一覧 ({selectedProject.name})
             </h3>
             <div className="flex items-center gap-2">
+              <label
+                htmlFor="status-filter"
+                className="text-sm text-gray-700 dark:text-gray-300">
+                Status:
+              </label>
+              <select
+                id="status-filter"
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value)}
+                className="px-2 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white">
+                <option value="">All</option>
+                {Array.from(
+                  new Set(issues.map((issue) => issue.status.name))
+                ).map((status) => (
+                  <option key={status} value={status}>
+                    {status}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="flex items-center">
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="課題を検索..."
-                className="px-3 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+                className="px-3 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded-l focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
                 onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
               />
               <button
                 onClick={handleSearch}
                 disabled={isLoading}
-                className="px-3 py-1 text-sm bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white rounded transition-colors">
+                className="px-3 py-1 text-sm bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white rounded-r transition-colors">
                 検索
               </button>
             </div>
@@ -164,7 +191,7 @@ export function BacklogConnection({ onIssueSelect }: Props) {
             </div>
           ) : (
             <div className="space-y-2 max-h-96 overflow-y-auto">
-              {issues.map((issue) => (
+              {filteredIssues.map((issue) => (
                 <button
                   key={issue.id}
                   onClick={() => onIssueSelect(issue)}

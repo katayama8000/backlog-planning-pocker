@@ -131,65 +131,62 @@ export function PlanningPoker() {
     players.length > 0 && players.every((p) => p.hasVoted);
 
   return (
-    <div className="max-w-6xl mx-auto space-y-8">
-      {/* Backlog連携セクション */}
-      <BacklogConnection onIssueSelect={handleBacklogIssueSelect} />
-
-      {/* ストーリー入力セクション */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
-        <StoryInput
-          onStartStory={startStory}
-          currentStory={currentStory}
-          selectedBacklogIssue={selectedBacklogIssue}
-        />
-      </div>
-
-      {/* プレイヤー管理セクション */}
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
-        <PlayerList
-          players={players}
-          currentPlayer={currentPlayer}
-          onAddPlayer={addPlayer}
-          onRemovePlayer={removePlayer}
-          onSetCurrentPlayer={setCurrentPlayer}
-          showResults={showResults}
-        />
-      </div>
-
-      {/* 投票セクション */}
-      {isVotingPhase && currentPlayer && (
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
+      {/* Left Column */}
+      <div className="lg:col-span-2 space-y-8">
+        <BacklogConnection onIssueSelect={handleBacklogIssueSelect} />
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
-          <CardSelection
-            cards={FIBONACCI_CARDS}
-            selectedCard={currentPlayer.selectedCard}
-            onSelectCard={selectCard}
-            disabled={currentPlayer.hasVoted}
+          <StoryInput
+            onStartStory={startStory}
+            currentStory={currentStory}
+            selectedBacklogIssue={selectedBacklogIssue}
           />
-
-          {/* 投票状況 */}
-          <div className="mt-6 text-center">
-            <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
-              投票済み: {players.filter((p) => p.hasVoted).length} /{' '}
-              {players.length}
-            </p>
-
-            {allPlayersVoted && (
-              <button
-                onClick={revealCards}
-                className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg font-medium transition-colors">
-                カードを公開
-              </button>
-            )}
-          </div>
         </div>
-      )}
+      </div>
 
-      {/* 結果セクション */}
-      {showResults && (
+      {/* Right Column */}
+      <div className="space-y-8">
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
-          <Results players={players} onStartNewRound={startNewRound} />
+          <PlayerList
+            players={players}
+            currentPlayer={currentPlayer}
+            onAddPlayer={addPlayer}
+            onRemovePlayer={removePlayer}
+            onSetCurrentPlayer={setCurrentPlayer}
+            showResults={showResults}
+          />
         </div>
-      )}
+
+        {isVotingPhase && currentPlayer && (
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+            <CardSelection
+              cards={FIBONACCI_CARDS}
+              selectedCard={currentPlayer.selectedCard}
+              onSelectCard={selectCard}
+              disabled={currentPlayer.hasVoted}
+            />
+            <div className="mt-6 text-center">
+              <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                投票済み: {players.filter((p) => p.hasVoted).length} /{' '}
+                {players.length}
+              </p>
+              {allPlayersVoted && (
+                <button
+                  onClick={revealCards}
+                  className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg font-medium transition-colors">
+                  カードを公開
+                </button>
+              )}
+            </div>
+          </div>
+        )}
+
+        {showResults && (
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+            <Results players={players} onStartNewRound={startNewRound} />
+          </div>
+        )}
+      </div>
     </div>
   );
 }

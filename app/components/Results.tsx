@@ -60,141 +60,54 @@ export function Results({ players, onStartNewRound }: ResultsProps) {
     numericVotes.every((vote) => vote === numericVotes[0]);
 
   return (
-    <div>
-      <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-6">
-        投票結果
-      </h2>
+    <div className="space-y-6">
+      <div className="text-center">
+        <h2 className="text-2xl font-bold text-gray-800 dark:text-white">
+          投票結果
+        </h2>
+      </div>
 
-      {/* 全員の投票結果 */}
-      <div className="mb-8">
-        <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-4">
-          全員の投票
-        </h3>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          {players.map((player) => (
-            <div
-              key={player.id}
-              className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
-              <div className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                {player.name}
-              </div>
-              <div className="text-2xl font-bold text-center">
-                {player.selectedCard !== null ? (
-                  <span
-                    className={`
-                    inline-block px-3 py-2 rounded-lg
-                    ${
-                      player.selectedCard >= 0
-                        ? 'bg-blue-100 dark:bg-blue-800 text-blue-800 dark:text-blue-200'
-                        : 'bg-orange-100 dark:bg-orange-800 text-orange-800 dark:text-orange-200'
-                    }
-                  `}>
-                    {getCardDisplay(player.selectedCard)}
-                  </span>
-                ) : (
-                  <span className="text-gray-400">未投票</span>
-                )}
-              </div>
-            </div>
-          ))}
-        </div>
+      {/* 合意状況 */}
+      <div
+        className={`p-4 rounded-lg border-2 text-center ${
+          allSame && numericVotes.length > 0
+            ? 'bg-green-50 dark:bg-green-900/20 border-green-400 dark:border-green-700'
+            : 'bg-yellow-50 dark:bg-yellow-900/20 border-yellow-400 dark:border-yellow-700'
+        }`}>
+        {allSame && numericVotes.length > 0 ? (
+          <p className="text-lg font-semibold text-green-800 dark:text-green-200">
+            ✅ 全員一致！
+          </p>
+        ) : (
+          <p className="text-lg font-semibold text-yellow-800 dark:text-yellow-200">
+            ⚠️ 意見が割れています
+          </p>
+        )}
       </div>
 
       {/* 統計情報 */}
       {numericVotes.length > 0 && (
-        <div className="mb-8">
-          <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-4">
-            統計情報
-          </h3>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4 text-center">
-              <div className="text-2xl font-bold text-green-800 dark:text-green-200">
-                {average.toFixed(1)}
-              </div>
-              <div className="text-sm text-green-600 dark:text-green-400">
-                平均
-              </div>
+        <div className="grid grid-cols-2 gap-4 text-center">
+          <div className="bg-gray-100 dark:bg-gray-700 p-3 rounded-lg">
+            <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">
+              {average.toFixed(1)}
             </div>
-            <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 text-center">
-              <div className="text-2xl font-bold text-blue-800 dark:text-blue-200">
-                {recommendedValue}
-              </div>
-              <div className="text-sm text-blue-600 dark:text-blue-400">
-                推奨値
-              </div>
-            </div>
-            <div className="bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800 rounded-lg p-4 text-center">
-              <div className="text-2xl font-bold text-purple-800 dark:text-purple-200">
-                {min}
-              </div>
-              <div className="text-sm text-purple-600 dark:text-purple-400">
-                最小
-              </div>
-            </div>
-            <div className="bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-800 rounded-lg p-4 text-center">
-              <div className="text-2xl font-bold text-orange-800 dark:text-orange-200">
-                {max}
-              </div>
-              <div className="text-sm text-orange-600 dark:text-orange-400">
-                最大
-              </div>
-            </div>
+            <div className="text-sm text-gray-600 dark:text-gray-400">平均</div>
           </div>
-        </div>
-      )}
-
-      {/* 合意状況 */}
-      <div className="mb-8">
-        <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-4">
-          合意状況
-        </h3>
-        <div
-          className={`p-4 rounded-lg border ${
-            allSame && numericVotes.length > 0
-              ? 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800'
-              : 'bg-yellow-50 dark:bg-yellow-900/20 border-yellow-200 dark:border-yellow-800'
-          }`}>
-          {allSame && numericVotes.length > 0 ? (
-            <p className="text-green-800 dark:text-green-200">
-              ✅ 全員が同じ値（{numericVotes[0]}
-              ）に投票しました！合意が取れています。
-            </p>
-          ) : (
-            <p className="text-yellow-800 dark:text-yellow-200">
-              ⚠️ 投票に差があります。再議論をおすすめします。
-            </p>
-          )}
-        </div>
-      </div>
-
-      {/* 特別な投票がある場合 */}
-      {specialVotes.length > 0 && (
-        <div className="mb-8">
-          <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-4">
-            特別な投票
-          </h3>
-          <div className="space-y-2">
-            {specialVotes.map(({ player, card }) => (
-              <div
-                key={player.id}
-                className="bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-800 rounded-lg p-3">
-                <span className="font-medium text-orange-800 dark:text-orange-200">
-                  {player.name}
-                </span>
-                <span className="text-orange-600 dark:text-orange-400 ml-2">
-                  → {getCardDisplay(card)}
-                </span>
-              </div>
-            ))}
+          <div className="bg-gray-100 dark:bg-gray-700 p-3 rounded-lg">
+            <div className="text-2xl font-bold text-green-600 dark:text-green-400">
+              {recommendedValue}
+            </div>
+            <div className="text-sm text-gray-600 dark:text-gray-400">推奨値</div>
           </div>
         </div>
       )}
 
       {/* 投票分布 */}
       {Object.keys(voteCounts).length > 0 && (
-        <div className="mb-8">
-          <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-4">
-            投票分布
+        <div>
+          <h3 className="text-md font-semibold text-gray-700 dark:text-gray-300 mb-2 text-center">
+            投票の内訳
           </h3>
           <div className="space-y-2">
             {Object.entries(voteCounts)
@@ -204,15 +117,13 @@ export function Results({ players, onStartNewRound }: ResultsProps) {
                   <div className="w-12 text-center font-medium text-gray-700 dark:text-gray-300">
                     {value}
                   </div>
-                  <div className="flex-1 ml-4">
-                    <div className="bg-gray-200 dark:bg-gray-600 rounded-full h-6">
-                      <div
-                        className="bg-blue-500 h-6 rounded-full flex items-center justify-end pr-2"
-                        style={{ width: `${(count / players.length) * 100}%` }}>
-                        <span className="text-white text-sm font-medium">
-                          {count}人
-                        </span>
-                      </div>
+                  <div className="flex-1 ml-2">
+                    <div
+                      className="bg-blue-500 h-6 rounded-full flex items-center justify-end pr-2"
+                      style={{ width: `${(count / players.length) * 100}%` }}>
+                      <span className="text-white text-sm font-medium">
+                        {count}人
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -221,12 +132,35 @@ export function Results({ players, onStartNewRound }: ResultsProps) {
         </div>
       )}
 
+      {/* 特別な投票がある場合 */}
+      {specialVotes.length > 0 && (
+        <div>
+          <h3 className="text-md font-semibold text-gray-700 dark:text-gray-300 mb-2 text-center">
+            特別な投票
+          </h3>
+          <div className="space-y-2">
+            {specialVotes.map(({ player, card }) => (
+              <div
+                key={player.id}
+                className="bg-orange-50 dark:bg-orange-900/20 border border-orange-200 dark:border-orange-800 rounded-lg p-2 flex justify-between items-center">
+                <span className="font-medium text-orange-800 dark:text-orange-200">
+                  {player.name}
+                </span>
+                <span className="text-orange-600 dark:text-orange-400 font-bold">
+                  {getCardDisplay(card)}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* アクションボタン */}
-      <div className="flex gap-4 justify-center">
+      <div className="pt-4 border-t border-gray-200 dark:border-gray-700">
         <button
           onClick={onStartNewRound}
-          className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition-colors">
-          新しいラウンドを開始
+          className="w-full bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition-colors text-lg">
+          次のラウンドへ
         </button>
       </div>
     </div>
