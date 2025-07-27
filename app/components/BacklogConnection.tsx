@@ -12,7 +12,7 @@ type Props = {
 
 export function BacklogConnection({ onIssueSelect }: Props) {
   const [apiKey, setApiKey] = useState('');
-  const [host, setHost] = useState('');
+  const host = 'nulab.backlog.jp';
   const [searchQuery, setSearchQuery] = useState('');
 
   const {
@@ -33,14 +33,9 @@ export function BacklogConnection({ onIssueSelect }: Props) {
     await connect(host, apiKey);
   };
 
-  const handleConnectWithDefaults = async () => {
-    await connectWithDefaults();
-  };
-
   const handleDisconnect = () => {
     disconnect();
     setApiKey('');
-    setHost('');
   };
 
   // 未使用の関数・変数は削除
@@ -62,19 +57,12 @@ export function BacklogConnection({ onIssueSelect }: Props) {
 
         <div className="space-y-4">
           <div>
-            <label
-              htmlFor="backlog-host"
-              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-              Backlogホスト *
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              Backlogホスト:{' '}
+              <span className="font-mono text-blue-700 dark:text-blue-300">
+                nulab.backlog.jp
+              </span>
             </label>
-            <input
-              id="backlog-host"
-              type="text"
-              value={host}
-              onChange={(e) => setHost(e.target.value)}
-              placeholder="例: yourspace.backlog.jp"
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
-            />
           </div>
 
           <div>
@@ -115,21 +103,9 @@ export function BacklogConnection({ onIssueSelect }: Props) {
             {isLoading ? '接続中...' : 'Backlogに接続'}
           </button>
 
-          <div className="flex gap-2">
-            <button
-              onClick={handleConnectWithDefaults}
-              disabled={isLoading}
-              className="flex-1 bg-green-600 hover:bg-green-700 disabled:bg-gray-400 text-white px-4 py-2 rounded-lg font-medium transition-colors">
-              {isLoading ? '接続中...' : 'デフォルトで接続'}
-            </button>
-          </div>
-
           <div className="text-sm text-gray-600 dark:text-gray-400">
             <p>※ BacklogのAPIキーが必要です。</p>
             <p>設定 → 個人設定 → APIより取得できます。</p>
-            <p className="mt-2 text-green-600 dark:text-green-400">
-              💡 デモ用のデフォルト値が利用できます
-            </p>
           </div>
         </div>
       </div>
